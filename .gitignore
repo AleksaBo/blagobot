@@ -12,6 +12,6 @@ bmpdo-bot_mol
 dbsql
 *.sqlt
 
-
+.venv
 
 

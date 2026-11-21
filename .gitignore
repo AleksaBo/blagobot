@@ -1,0 +1,15 @@
+# игнор паки виртуалвенв
+bmpvenv/
+__pycache__
+#app/__init.py__
+ideja.txt
+#.gitignore
+_ignn/
+_ignn/ttken.py
+jsn_learn.py
+bmpdo-bot_mol
+123.jn
+
+
+
+

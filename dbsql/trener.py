@@ -49,7 +49,7 @@ class TopicBuilderApp:
     def prnt(self):
         tu = (self.day_var.get(), self.c_var.get())
 
-        print(f"День - {tu[0]}, а тема - {tu[1]} - дадайце цытаты...")
+        print(f"Дзень - {tu[0]}, а тэма - {tu[1]} - дадайце цытаты...")
 
     def _build_ui(self):
         # --- Верхняя панэль: Дзень, Нумар тэмы, Назва ---
@@ -60,7 +60,7 @@ class TopicBuilderApp:
         self.day_var = tk.IntVar(value=1)
         ttk.Spinbox(top_frame, from_=1, to=90, textvariable=self.day_var, width=5).grid(row=0, column=1, padx=5)
 
-        ttk.Label(top_frame, text="Тема (1-8):").grid(row=0, column=2, sticky="w")
+        ttk.Label(top_frame, text="Тэма (1-8):").grid(row=0, column=2, sticky="w")
         self.c_var = tk.IntVar(value=1)
         ttk.Spinbox(top_frame, from_=1, to=8, textvariable=self.c_var, width=5).grid(row=0, column=3, padx=5)
 
@@ -70,7 +70,8 @@ class TopicBuilderApp:
 
         ###кнопка выход 
         ttk.Button(self.root,text=">>Выхад...", command=root.destroy).pack(anchor="e", padx = 20, pady=25)
-
+        #прыціскае да правага боку - anchor=, padx сварае водступ каб кнопка не лезла на край ці па за край, 
+        ## pady - стварае водступы звеху і знізу кнопкі. 
         
 
            

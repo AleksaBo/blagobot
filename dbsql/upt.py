@@ -1,14 +1,6 @@
 import json
-#import sqlite3
 import tkinter as tk
 from tkinter import ttk, messagebox
-
-# === НАЛАДЫ ПАД ВАШУ БАЗУ ===
-#DB_PATH = "/home/sashbo/Progy/prbot/dbsql/sin_fi.sqlt"  # Укажыце шлях да вашага файла SQLite
-
-# Назвы табліц і слупкоў (падпраўце пад вашы, калі адрозніваюцца)
-#QUOTES_TABLE = "quotes"        # Слупкі: id_book, chapter, quote_num, text
-#TOPICS_TABLE = "schedule_topics" # Слупкі: day_num, topic_order, title, quotes_json
 
 
 def expand_spec(spec: str) -> list[int]:
@@ -38,23 +30,7 @@ class TopicBuilderApp:
         # self._init_db_table()
         self._build_ui()
 
-    # def _connect(self):
-    #     return sqlite3.connect(DB_PATH)
-
-    # def _init_db_table(self):
-    #     """Стварае табліцу тэм, калі яе яшчэ няма."""
-    #     with self._connect() as conn:
-    #         conn.execute(f"""
-    #             CREATE TABLE IF NOT EXISTS {TOPICS_TABLE} (
-    #                 id          INTEGER PRIMARY KEY AUTOINCREMENT,
-    #                 day_num     INTEGER NOT NULL,
-    #                 topic_order INTEGER NOT NULL,
-    #                 title       TEXT NOT NULL,
-    #                 quotes_json TEXT NOT NULL,
-    #                 UNIQUE (day_num, topic_order)
-    #             )
-    #         """)
-
+    
     def _build_ui(self):
         # --- Верхняя панэль: Дзень, Нумар тэмы, Назва ---
         top_frame = ttk.LabelFrame(self.root, text="1. Параметры тэмы", padding=10)
@@ -73,9 +49,7 @@ class TopicBuilderApp:
         ttk.Entry(top_frame, textvariable=self.title_var, width=30).grid(row=0, column=5, padx=5, sticky="ew")
         ttk.Label(top_frame, text="/    ").grid(row=0, column=9)
         ttk.Label(top_frame, text="/    ").grid(row=0, column=10)
-        
-        # ttk.Button(top_frame, text="Загрузіць з БД", command=self.load_existing).grid(row=0, column=6, padx=5)
-
+    
         # --- Панэль дадання блока цытат ---
         block_frame = ttk.LabelFrame(self.root, text="2. Дадаць спасылку на цытаты", padding=10)
         block_frame.pack(fill="x", padx=10, pady=5)
@@ -176,87 +150,11 @@ class TopicBuilderApp:
         for b in self.blocks:
             self.blocks_listbox.insert(tk.END, json.dumps(b, ensure_ascii=False))
 
-        # Падцягваем рэальныя цытаты з базы для перадпрагляду справа
-        # lines = []
-        # with self._connect() as conn:
-        #     for b in self.blocks:
-        #         q_nums = expand_spec(str(b["q"])) if not isinstance(b["q"], list) else b["q"]
-        #         placeholders = ",".join("?" for _ in q_nums)
-        #         cur = conn.execute(
-        #             f"""
-        #             SELECT quote_num, text FROM {QUOTES_TABLE}
-        #             WHERE id_book = ? AND chapter = ? AND quote_num IN ({placeholders})
-        #             ORDER BY quote_num ASC
-        #             """,
-        #             [b["b"], b["c"], *q_nums],
-        #         )
-        #         found = cur.fetchall()
-        #         found_map = {r: r for r in found}
-
-        #         lines.append(f"--- Кніга {b['b']}, глава {b['c']} ---")
-        #         for num in q_nums:
-        #             if num in found_map:
-        #                 lines.append(f"[{num}] {found_map[num]}")
-        #             else:
-        #                 lines.append(f"[{num}] ⚠️ НЕ ЗНОЙДЗЕНА Ў БАЗЕ!")
-        #         lines.append("")
-
         self.preview_text.config(state="normal")
         self.preview_text.delete("1.0", tk.END)
         # self.preview_text.insert("1.0", "\n".join(lines))
         self.preview_text.config(state="disabled")
 
-    # def load_existing(self):
-    #     """Загружае ўжо захаваную тэму з базы для рэдагавання."""
-    #     day = self.day_var.get()
-    #     order = self.order_var.get()
-    #     with self._connect() as conn:
-    #         cur = conn.execute(
-    #             f"SELECT title, quotes_json FROM {TOPICS_TABLE} WHERE day_num = ? AND topic_order = ?",
-    #             (day, order),
-    #         )
-    #         row = cur.fetchone()
-    #         if row:
-    #             self.title_var.set(row)
-    #             self.blocks = json.loads(row)
-    #             self._refresh_ui()
-    #             self.status_lbl.config(text=f"Загружана: Дзень {day}, Тэма {order}", foreground="blue")
-    #         else:
-    #             messagebox.showinfo("Інфармацыя", "Гэтая тэма яшчэ не запоўнена ў базе.")
-
-    # def save_and_next(self):
-    #     title = self.title_var.get().strip()
-    #     if not title or not self.blocks:
-    #         messagebox.showwarning("Увага", "Увядзіце назву тэмы і дадайце хаця б адзін блок цытат.")
-    #         return
-
-    #     day = self.day_var.get()
-    #     order = self.order_var.get()
-    #     json_str = json.dumps(self.blocks, ensure_ascii=False)
-
-    #     with self._connect() as conn:
-    #         conn.execute(
-    #             f"""
-    #             INSERT INTO {TOPICS_TABLE} (day_num, topic_order, title, quotes_json)
-    #             VALUES (?, ?, ?, ?)
-    #             ON CONFLICT(day_num, topic_order) DO UPDATE SET
-    #                 title=excluded.title,
-    #                 quotes_json=excluded.quotes_json
-    #             """,
-    #             (day, order, title, json_str),
-    #         )
-
-    #     self.status_lbl.config(text=f"✅ Захавана: Дзень {day}, Тэма {order} ({title})", foreground="green")
-
-        # # Аўтаматычны пераход да наступнай тэмы / дня
-        # self.title_var.set("")
-        # self.clear_blocks()
-        # if order < 8:
-        #     self.order_var.set(order + 1)
-        # else:
-        #     self.order_var.set(1)
-        # if day < 90:
-        #     self.day_var.set(day + 1)
 if __name__ == "__main__":
     root = tk.Tk()
     app = TopicBuilderApp(root)

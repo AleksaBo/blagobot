@@ -69,7 +69,7 @@ class TopicBuilderApp:
 
 
         ###кнопка выход 
-        ttk.Button(self.root,text=">>Выхад...", command=root.destroy).pack(anchor="e", padx = 20, pady=10)
+        ttk.Button(self.root,text=">>Выхад...", command=root.destroy).pack(anchor="e", padx = 20, pady=25)
 
         
 

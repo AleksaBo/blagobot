@@ -44,20 +44,19 @@ class DBase:
     # метад выдалення запісаў з табліцы, на выпадак некарэктнага увода
     def del_topic(self, id_day, id_itm):
         self.cursor.execute("DELETE FROM txtforday WHERE id_day = ? OR id_itm = ?" , (id_day, id_itm))
-""" патрэбны яшчэ метады фармавання json-аў, і перадачы іх у базу, але гэтыя метады трэба стварыць у другім файле 
-там дзе ткінтэр, а сюды імпартаваць іх для выклікаў"""
+#""" патрэбны яшчэ метады фармавання json-аў, і перадачы іх у базу, але гэтыя метады трэба стварыць у другім файле 
+#там дзе ткінтэр, а сюды імпартаваць іх для выклікаў"""
+
+    def sel_items(self):
+        self.cursor.execute("SELECT id, nazv_items FROM ITEMS_DAY")
+        items_list = [ row for row in self.cursor.fetchall()]
+        print(items_list)
+
     
 
 if __name__ == "__main__":
 
-    item_tupl_d = int(input("уведзі дзень)"))
-    item_tupl_i = int(input("уведзі тэму)"))
+    # item_tupl_d = int(input("уведзі дзень)"))
+    # item_tupl_i = int(input("уведзі тэму)"))
     with DBase() as db:
-        #db.create_table()
-        #db.add_user("Sabory", 45)
-     #   db.del_topic(item_tupl_d, item_tupl_i)
-      #  print(f"выдален запіс {item_tupl_d}, {item_tupl_i} у табліцэ тэм")
-        db.add_topic(item_tupl_d,item_tupl_i, "эксперэментальнае даданне")
-        
-#     def _connect(self):
-#         return sqlite .connect(DB_PATH)
+        db.sel_items()
